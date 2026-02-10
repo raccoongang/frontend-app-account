@@ -3,14 +3,17 @@ import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import { breakpoints, useWindowSize } from '@openedx/paragon';
 import classNames from 'classnames';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavHashLink } from 'react-router-hash-link';
 import Scrollspy from 'react-scrollspy';
 import messages from './AccountSettingsPage.messages';
+import { selectShowPreferences } from '../notification-preferences/data/selectors';
 
 const JumpNav = ({
   intl,
 }) => {
   const stickToTop = useWindowSize().width > breakpoints.small.minWidth;
+  const showNotifications = useSelector(selectShowPreferences());
 
   return (
     <div className={classNames('jump-nav px-2.25', { 'jump-nav-sm position-sticky pt-3': stickToTop })}>
@@ -19,7 +22,7 @@ const JumpNav = ({
           'basic-information',
           'profile-information',
           'social-media',
-          'notifications',
+          ...(showNotifications ? ['notifications'] : []),
           'site-preferences',
           'linked-accounts',
           'delete-account',
@@ -43,11 +46,13 @@ const JumpNav = ({
             {intl.formatMessage(messages['account.settings.section.social.media'])}
           </NavHashLink>
         </li>
-        <li>
-          <NavHashLink to="#notifications">
-            {intl.formatMessage(messages['notification.preferences.notifications.label'])}
-          </NavHashLink>
-        </li>
+        {showNotifications && (
+          <li>
+            <NavHashLink to="#notifications">
+              {intl.formatMessage(messages['notification.preferences.notifications.label'])}
+            </NavHashLink>
+          </li>
+        )}
         <li>
           <NavHashLink to="#site-preferences">
             {intl.formatMessage(messages['account.settings.section.site.preferences'])}
