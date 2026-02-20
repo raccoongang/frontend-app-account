@@ -72,4 +72,40 @@ describe('JumpNav', () => {
 
     expect(await screen.findByText('Delete My Account')).toBeVisible();
   });
+
+  it('should not render notifications link when showPreferences is false', async () => {
+    store = configureStore({
+      notificationPreferences: {
+        showPreferences: false,
+      },
+    });
+
+    render(
+      <IntlProvider locale="en">
+        <AppProvider store={store}>
+          <IntlJumpNav {...props} />
+        </AppProvider>
+      </IntlProvider>,
+    );
+
+    expect(screen.queryByText('Notifications')).toBeNull();
+  });
+
+  it('should render notifications link when showPreferences is true', async () => {
+    store = configureStore({
+      notificationPreferences: {
+        showPreferences: true,
+      },
+    });
+
+    render(
+      <IntlProvider locale="en">
+        <AppProvider store={store}>
+          <IntlJumpNav {...props} />
+        </AppProvider>
+      </IntlProvider>,
+    );
+
+    expect(await screen.findByText('Notifications')).toBeVisible();
+  });
 });
